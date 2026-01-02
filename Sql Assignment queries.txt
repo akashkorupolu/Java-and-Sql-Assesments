@@ -1,0 +1,168 @@
+
+
+1.ALTER TABLE products
+ADD tax FLOAT;
+
+UPDATE products SET tax=price*0.2;
+
+2.SELECT title 
+FROM books 
+WHERE titles LIKE 's%' or 't%';
+
+3.SELECT name 
+FROM books
+WHERE type in('business','psychology','undecided');
+
+4.SELECT title 
+from books 
+where prod_id in 
+(SELECT prod_id FROM sales where sales>5000 and royalty<20);
+
+5.SELECT title 
+from books b 
+INNER JOIN 
+sales s 
+ON b.prod_id=s.prod_id 
+WHERE b.publisher_id='0736' ORDER BY s.sales ;
+
+6.SELECT 
+MAX(royalty)-MIN(royalty) AS diff_royalty
+FROM sales s
+WHERE prod_id in
+(SELECT prod_id FROM books WHERE publisher_id='0877');
+
+7.SELECT 
+author_id,COUNT(prod_id) 
+FROM products 
+GROUP BY author_id;
+
+8.SELECT
+title,COUNT(author_id) 
+FROM books
+GROUP BY title;
+
+9.SELECT 
+b.author_id,s.AVG(royalty) AS avg_royalty
+FROM books b
+LEFT JOIN
+sales s
+ON
+b.prod_id=s.prod_id
+WHERE b.author_order = 1
+GROUP BY b.author_id;
+
+10.SELECT b.title FROM books b
+INNER JOIN products p 
+on p.prod_id=b.prod_id
+INNER JOIN sales s ON
+s.prod_id=b.prod_id
+where s.sales between 100000 and 20000
+order by p.price;
+
+11.SELECT COUNT(DISTINCT author_id) 
+FROM books 
+WHERE city='Menlo Park';
+
+12.SELECT STATE,COUNT(DISTINCT(author_id)) 
+FROM books 
+GROUP BY state 
+ORDER BY state;
+
+13.SELECT state
+FROM books
+WHERE first_name LIKE '%s'
+GROUP BY state
+HAVING COUNT(DISTINCT author_id) > 2;
+
+14.SELECT 
+REPLACE(REPLACE(titles,'.','*'),'-','*')
+FROM books;
+
+15.SELECT TRIM(titles) FROM books;
+
+
+16.
+SELECT 
+LEFT(title, CHARINDEX(' ', title)) 
+AS FirstWord FROM books;
+
+17.
+SELECT MONTH(published_date),COUNT(*) 
+FROM books 
+GROUP BY MONTH(published_date);
+
+18.SELECT 
+title,publisher_name 
+FROM books 
+WHERE country='USA';
+
+19.SELECT b.publisher_name,AVG(p.price) FROM books b INNER JOIN products p
+ON b.prod_id=p.prod_id GROUP BY b.prod_id;
+
+20.SELECT city,COUNT(DISTINCT author_id) FROM books GROUP BY city;
+
+21.SELECT author_name,COALESCE(title,'No Title') 
+as title FROM 
+books;
+
+22.SELECT publisher_name,author_name FROM books WHERE author_order=1;
+
+
+23.SELECT  DISTINCT b.publisher_name,b.city from books b
+INNER JOIN products p ON
+b.publisher_id=s.publisher_id
+WHERE
+p.price = (select max(price) from products group by publisher_id);
+
+24.SELECT DISTINCT
+title FROM books 
+WHERE city='menlo park';
+
+25.SELECT DISTINCT publisher_name 
+FROM books 
+WHERE YEAR(published_date)=1991; 
+
+26.SELECT titles 
+FROM books WHERE published_country !='USA';
+
+27.SELECT titles FROM books b 
+INNER JOIN products p
+ON p.product_id=b.product_id 
+WHERE b.published_country='USA' OR p.price<5;
+
+28.CREATE VIEW published
+AS
+SELECT b.title,YEAR(b.published_date) as year_published,p.price,b.type 
+FROM books b INNER JOIN
+products p on p.prod_id=b.prod_id;
+
+29.SELECT DISTINCT b.publisher_name
+FROM books b
+INNER JOIN (
+    SELECT author_id
+    FROM books
+    GROUP BY author_id
+    HAVING COUNT(title) > 2
+) a ON b.author_id = a.author_id;
+
+30.DELETE FROM books
+WHERE first_name = 'Dean';
+
+31.UPDATE products 
+SET price=(SELECT price FROM products WHERE prod_id = 'MC2222')
+where prod_id='BU111';
+
+32.SELECT title
+FROM books
+WHERE YEAR(published_date) >= YEAR(CURDATE()) - 25;
+
+33.SELECT title FROM books WHERE Year(published_date)=2021;
+
+34.CREATE VIEW publisher_details
+as
+SELECT  publisher_name,city,count(books) as book_count
+FROM books GROUP BY publisher_name,city;
+
+
+
+
